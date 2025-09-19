@@ -64,9 +64,10 @@
                 Seu navegador não suporta vídeos.
             </video>
             <div class="absolute top-0 left-0 w-full h-full bg-black/60 z-10"></div>
-            <div class="relative z-20 px-4 text-white animate-fade-in">
-                <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">O sabor que chega até você.</h2>
-                <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8">Salgados, doces e bebidas feitos com carinho, entregues na porta da sua casa.</p>
+            <div class="relative z-20 px-4 text-white animate-fade-in flex flex-col items-center">
+                <img id="hero-logo-image" class="h-24 md:h-32 mb-8 hidden object-contain" alt="Logo DANARAFOODS">
+                <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">Escolha seu salgado ou doce Favorito.</h2>
+                <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8">Aproveite nosso Cardápio! Escolha o que desejar e receba em sua casa de forma rápida e segura.</p>
                 <a href="#menu-section" class="bg-orange-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-orange-600 transition-transform hover:scale-105 inline-block">
                     Ver Cardápio Agora
                 </a>
@@ -74,7 +75,7 @@
         </section>
 
         <main class="container mx-auto">
-             <!-- Info Sections -->
+            <!-- Info Sections -->
             <section id="info-services-view" class="py-16 px-4 bg-white">
                  <div class="text-center max-w-4xl mx-auto">
                     <h2 class="text-sm font-bold text-orange-500 uppercase tracking-wider">Serviços</h2>
@@ -222,7 +223,7 @@
                             <label for="product-image" class="block text-sm font-medium text-gray-700">Imagem</label>
                             <input type="file" id="product-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
                              <input type="hidden" id="product-image-url">
-                            <img id="image-preview" class="mt-4 rounded-lg max-h-40 hidden" src="" alt="Pré-visualização da imagem">
+                            <img id="image-preview" class="mt-4 rounded-lg max-h-40 object-contain hidden" src="" alt="Pré-visualização da imagem">
                         </div>
                         <div class="flex space-x-4">
                             <button type="submit" id="save-product-button" class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition flex items-center justify-center gap-2">
@@ -390,10 +391,17 @@
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-5 right-5 bg-green-500 text-white py-2 px-5 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300"></div>
 
-    <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/5567992369526?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido." target="_blank" class="fixed bottom-4 right-4 bg-green-500 text-white p-2.5 rounded-full shadow-lg z-50 flex items-center justify-center hover:bg-green-600 transition-transform hover:scale-110">
-        <svg viewBox="0 0 32 32" class="w-7 h-7" fill="white" xmlns="http://www.w3.org/2000/svg"><path d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.044-.53-.044-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.12-.302.214-.73.214-1.064v-.1c.004-.372-.128-.688-.214-.746-.088-.088-.624-.402-.69-.402z M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm0 29C8.82 29 3 23.18 3 16S8.82 3 16 3s13 5.82 13 13-5.82 13-13 13z"></path></svg>
-    </a>
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-4 right-4 z-50 flex flex-col items-center gap-3">
+        <!-- Instagram Button -->
+        <a href="https://www.instagram.com/danarafoods?utm_source=qr&igsh=ZW1pN3lqbXpqOXVl" target="_blank" class="w-14 h-14 rounded-full shadow-lg flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 text-white transition-transform hover:scale-110" aria-label="Nosso Instagram">
+            <i data-lucide="instagram" class="w-7 h-7"></i>
+        </a>
+        <!-- WhatsApp Button -->
+        <a href="https://wa.me/5567992369526?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido." target="_blank" class="w-14 h-14 bg-green-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 transition-transform hover:scale-110" aria-label="Peça pelo WhatsApp">
+            <svg viewBox="0 0 32 32" class="w-8 h-8" fill="white" xmlns="http://www.w3.org/2000/svg"><path d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.044-.53-.044-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.ડ02.214-.73.214-1.064v-.1c.004-.372-.128-.688-.214-.746-.088-.088-.624-.402-.69-.402z M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm0 29C8.82 29 3 23.18 3 16S8.82 3 16 3s13 5.82 13 13-5.82 13-13 13z"></path></svg>
+        </a>
+    </div>
 
     <!-- Firebase SDKs -->
     <script type="module">
@@ -442,6 +450,7 @@
             checkoutButton: document.getElementById('checkout-button'),
             headerTextLogo: document.getElementById('header-text-logo'),
             headerImageLogo: document.getElementById('header-image-logo'),
+            heroLogoImage: document.getElementById('hero-logo-image'),
             views: {
                 menu: document.getElementById('menu-section'),
                 admin: document.getElementById('admin-view'),
@@ -506,16 +515,25 @@
         };
 
         // --- RENDER FUNCTIONS ---
-         const renderHeader = () => {
+        const renderLogos = () => {
             if (logoUrl) {
+                // Header logo
                 dom.headerImageLogo.src = logoUrl;
                 dom.headerImageLogo.classList.remove('hidden');
                 dom.headerTextLogo.classList.add('hidden');
+                // Admin preview logo
                 dom.admin.logoPreview.src = logoUrl;
+                // Hero logo
+                dom.heroLogoImage.src = logoUrl;
+                dom.heroLogoImage.classList.remove('hidden');
             } else {
+                // Header logo
                 dom.headerImageLogo.classList.add('hidden');
                 dom.headerTextLogo.classList.remove('hidden');
+                // Admin preview logo
                 dom.admin.logoPreview.src = "https://placehold.co/100x100/f97316/ffffff?text=Logo";
+                // Hero logo
+                dom.heroLogoImage.classList.add('hidden');
             }
         };
 
@@ -528,9 +546,11 @@
             }
             filtered.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 flex flex-col';
+                card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 flex flex-col group';
                 card.innerHTML = `
-                    <img src="${p.image}" alt="${p.name}" class="w-full h-48 object-cover">
+                    <div class="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105">
+                    </div>
                     <div class="p-4 flex-grow flex flex-col">
                         <h3 class="text-lg font-bold">${p.name}</h3>
                         <p class="text-gray-600 text-sm mt-1 mb-4 flex-grow">${p.description}</p>
@@ -602,7 +622,7 @@
                     const cartItem = document.createElement('div');
                     cartItem.className = 'flex gap-4 py-4 border-b';
                     cartItem.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded-lg">
+                        <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-contain bg-gray-100 rounded-lg">
                         <div class="flex flex-col justify-between flex-grow">
                             <div><p class="font-semibold leading-tight">${item.name}</p><p class="text-sm text-orange-500 font-bold">${formatCurrency(item.price)}</p></div>
                             <div class="flex items-center justify-between mt-2">
@@ -630,7 +650,7 @@
                 item.className = 'bg-white p-4 rounded-lg shadow-sm flex items-center justify-between';
                 item.innerHTML = `
                     <div class="flex items-center space-x-4">
-                        <img src="${p.image}" alt="${p.name}" class="w-16 h-16 object-cover rounded-md">
+                        <img src="${p.image}" alt="${p.name}" class="w-16 h-16 object-contain bg-gray-100 rounded-md">
                         <div><p class="font-bold">${p.name}</p><p class="text-sm text-gray-500">${formatCurrency(p.price)}</p></div>
                     </div>
                     <div class="flex space-x-2">
@@ -693,7 +713,7 @@
             });
              onSnapshot(doc(db, "settings", "logo"), (doc) => {
                 logoUrl = doc.exists() ? doc.data().url : null;
-                renderHeader();
+                renderLogos();
             });
             onSnapshot(query(collection(db, "categories"), orderBy("name")), (snapshot) => {
                 categories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
