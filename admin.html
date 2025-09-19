@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração - DANARAFOODS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            /* Default Theme: Laranja Padrão */
+            --color-primary-hue: 24; /* HSL Hue for Orange */
+            --color-primary-saturation: 95%; /* HSL Saturation */
+            --color-primary-lightness: 53%; /* HSL Lightness */
+            
+            --color-primary: hsl(var(--color-primary-hue), var(--color-primary-saturation), var(--color-primary-lightness));
+            --color-primary-light: hsl(var(--color-primary-hue), var(--color-primary-saturation), 97%);
+            --color-primary-dark: hsl(var(--color-primary-hue), var(--color-primary-saturation), 48%);
+            --color-primary-text: #ffffff;
+
+            --color-bg: #f9fafb; /* gray-50 */
+            --color-card-bg: #ffffff; /* white */
+            --color-text-base: #1f2937; /* gray-800 */
+            --color-text-muted: #4b5563; /* gray-600 */
+            --color-border: #e5e7eb; /* gray-200 */
+        }
+
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            background-color: var(--color-bg);
+            color: var(--color-text-base);
+        }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { 
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+        #app-loader { display: flex; }
+    </style>
+</head>
+<body class="">
+
+    <!-- App Loader -->
+    <div id="app-loader" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center">
+        <h1 class="text-3xl font-bold text-orange-500 mb-4">DANARAFOODS</h1>
+        <svg class="animate-spin h-8 w-8 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+    </div>
+
+    <main id="app" class="hidden container mx-auto p-4">
+        <!-- Admin View -->
+        <div id="admin-view" class="animate-fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold">Painel de Administração</h2>
+                <a href="./index.html" class="text-white px-4 py-2 rounded-lg font-semibold flex items-center space-x-2 transition" style="background-color: var(--color-primary); color: var(--color-primary-text)">
+                    <i data-lucide="eye"></i>
+                    <span>Ver Site</span>
+                </a>
+            </div>
+
+            <!-- General Settings -->
+            <div class="p-6 rounded-lg shadow-md mb-8" style="background-color: var(--color-card-bg);">
+                <h3 class="text-xl font-bold mb-4">Configurações Gerais</h3>
+                <form id="settings-form">
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <div class="md:col-span-2">
+                            <label for="delivery-fee" class="block text-sm font-medium">Taxa de Entrega (R$)</label>
+                            <input type="number" step="0.01" id="delivery-fee" placeholder="Ex: 5.00" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3" style="border-color: var(--color-border); background-color: var(--color-bg)">
+                        </div>
+                        <div>
+                             <button type="submit" id="save-settings-button" class="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition">Salvar Taxa</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="border-t mt-6 pt-6" style="border-color: var(--color-border);">
+                    <h4 class="text-lg font-semibold mb-2">Logo da Loja</h4>
+                    <div class="flex items-center gap-4">
+                        <img id="logo-preview" class="w-20 h-20 object-contain rounded-md" style="background-color: var(--color-bg)" src="https://placehold.co/100x100/f97316/ffffff?text=Logo" alt="Pré-visualização da logo">
+                        <div>
+                            <label for="logo-upload" class="block text-sm font-medium">Carregar nova logo</label>
+                            <input type="file" id="logo-upload" accept="image/*" class="mt-1 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:text-orange-700 hover:file:bg-orange-100" style="color: var(--color-text-muted)">
+                            <button id="save-logo-button" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-600 transition text-sm">Salvar Logo</button>
+                        </div>
+                    </div>
+                </div>
+                 <div class="border-t mt-6 pt-6" style="border-color: var(--color-border);">
+                    <h4 class="text-lg font-semibold mb-4">Personalizar Cores do Site</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="theme-select" class="block text-sm font-medium">Temas Prontos</label>
+                            <select id="theme-select" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3" style="border-color: var(--color-border); background-color: var(--color-bg)">
+                                <option value="laranja-padrao">Laranja Padrão</option>
+                                <option value="rosa-padrao">Rosa Padrão</option>
+                                <option value="azul-romantico">Azul Romântico</option>
+                                <option value="vermelho-paixao">Vermelho Paixão</option>
+                                <option value="azul-ceu">Azul Céu</option>
+                                <option value="verde-esperanca">Verde Esperança</option>
+                                <option value="dark-moderno">Dark Moderno</option>
+                                <option value="custom">Personalizado</option>
+                            </select>
+                        </div>
+                        <div id="custom-colors-container" class="hidden">
+                            <label class="block text-sm font-medium">Cor Principal</label>
+                            <input type="color" id="custom-color-picker" class="mt-1 w-full h-10 p-1 border border-gray-300 rounded-md cursor-pointer" style="border-color: var(--color-border); background-color: var(--color-bg)">
+                        </div>
+                        <button id="save-theme-button" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-600 transition text-sm">Salvar Tema</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Management -->
+            <div class="p-6 rounded-lg shadow-md mb-8" style="background-color: var(--color-card-bg);">
+                <h3 class="text-xl font-bold mb-4">Gerenciar Categorias</h3>
+                <form id="category-form" class="flex gap-4 items-end mb-4">
+                    <div class="flex-grow">
+                        <label for="category-name" class="block text-sm font-medium">Nova Categoria</label>
+                        <input type="text" id="category-name" placeholder="Ex: Especiais" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-lg p-3" style="border-color: var(--color-border); background-color: var(--color-bg)">
+                    </div>
+                    <button type="submit" class="bg-green-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-600 transition">Adicionar</button>
+                </form>
+                <div id="admin-category-list" class="space-y-2">
+                    <!-- Admin categories will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Add/Edit Product Form -->
+            <div class="p-6 rounded-lg shadow-md mb-8" style="background-color: var(--color-card-bg);">
+                <h3 id="form-title" class="text-xl font-bold mb-4">Adicionar Novo Produto</h3>
+                <form id="product-form" class="space-y-4">
+                    <input type="hidden" id="product-id">
+                    <div>
+                        <label for="product-name" class="block text-sm font-medium">Nome</label>
+                        <input type="text" id="product-name" required class="mt-1 block w-full rounded-md shadow-sm text-lg p-3" style="border-color: var(--color-border); background-color: var(--color-bg)">
+                    </div>
+                    <div>
+                        <label for="product-description" class="block text-sm font-medium">Descrição</label>
+                        <textarea id="product-description" rows="2" required class="mt-1 block w-full rounded-md shadow-sm text-lg p-3" style="border-color: var(--color-border); background-color: var(--color-bg)"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="product-price" class="block text-sm font-medium">Preço (R$)</label>
+                            <input type="number" step="0.01" id="product-price" placeholder="Ex: 3.50" required class="mt-1 block w-full rounded-md shadow-sm text-lg p-3" style="border-color: var(--color-border); background-color: var(--color-bg)">
+                        </div>
+                        <div>
+                            <label for="product-category" class="block text-sm font-medium">Categoria</label>
+                            <select id="product-category" required class="mt-1 block w-full rounded-md shadow-sm text-lg p-3" style="border-color: var(--color-border); background-color: var(--color-bg)">
+                                <!-- Category options will be rendered here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="product-image" class="block text-sm font-medium">Imagem</label>
+                        <input type="file" id="product-image" accept="image/*" class="mt-1 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold" style="color: var(--color-text-muted)">
+                         <input type="hidden" id="product-image-url">
+                        <img id="image-preview" class="mt-4 rounded-lg max-h-40 object-contain hidden" src="" alt="Pré-visualização da imagem">
+                    </div>
+                    <div class="flex space-x-4">
+                        <button type="submit" id="save-product-button" class="w-full text-white py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2" style="background-color: var(--color-primary); color: var(--color-primary-text)">
+                            <span id="save-product-text">Salvar Produto</span>
+                            <svg id="save-product-loader" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        </button>
+                        <button type="button" id="cancel-edit-button" class="w-full py-3 rounded-lg font-semibold hover:bg-gray-300 transition hidden" style="background-color: var(--color-border); color: var(--color-text-base)">Cancelar Edição</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Product List for Admin -->
+            <div id="admin-product-list" class="space-y-4"></div>
+        </div>
+    </main>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="rounded-lg shadow-xl p-6 max-w-sm w-full" style="background-color: var(--color-card-bg)">
+            <h3 id="confirmation-title" class="text-lg font-bold mb-4">Confirmar Exclusão</h3>
+            <p id="confirmation-message" class="mb-6" style="color: var(--color-text-muted)">Tem certeza que deseja excluir este produto?</p>
+            <div class="flex justify-end space-x-4">
+                <button id="cancel-confirmation-button" class="px-4 py-2 rounded-lg font-semibold transition" style="background-color: var(--color-border); color: var(--color-text-base)">Cancelar</button>
+                <button id="confirm-action-button" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition">Excluir</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-green-500 text-white py-2 px-5 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300"></div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // 1. IMPORT FIREBASE SERVICES
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, addDoc, setDoc, deleteDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    
+        // 2. YOUR FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6kWt6KgT1zhRcY68-tExu4ZeqqmF9xhg",
+            authDomain: "danarafoods.firebaseapp.com",
+            projectId: "danarafoods",
+            storageBucket: "danarafoods.firebasestorage.app",
+            messagingSenderId: "670145100782",
+            appId: "1:670145100782:web:7eabb86f092bb241cd6cff",
+            measurementId: "G-HS1NJ9CLFV"
+        };
+
+        // --- GLOBAL STATE ---
+        let products = [];
+        let categories = [];
+        let currentTheme = {};
+        let deliveryFee = 5.00;
+        let logoUrl = null;
+        let editingProductId = null;
+        let actionToConfirm = null;
+        
+        // --- FIREBASE INITIALIZATION ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // --- DOM SELECTORS ---
+        const dom = {
+            appLoader: document.getElementById('app-loader'),
+            app: document.getElementById('app'),
+            admin: {
+                productList: document.getElementById('admin-product-list'),
+                form: document.getElementById('product-form'),
+                formTitle: document.getElementById('form-title'),
+                productIdInput: document.getElementById('product-id'),
+                productNameInput: document.getElementById('product-name'),
+                productDescInput: document.getElementById('product-description'),
+                productPriceInput: document.getElementById('product-price'),
+                productCategoryInput: document.getElementById('product-category'),
+                productImageInput: document.getElementById('product-image'),
+                productImageUrlInput: document.getElementById('product-image-url'),
+                imagePreview: document.getElementById('image-preview'),
+                saveButton: document.getElementById('save-product-button'),
+                saveButtonText: document.getElementById('save-product-text'),
+                saveButtonLoader: document.getElementById('save-product-loader'),
+                cancelEditButton: document.getElementById('cancel-edit-button'),
+                categoryForm: document.getElementById('category-form'),
+                categoryNameInput: document.getElementById('category-name'),
+                adminCategoryList: document.getElementById('admin-category-list'),
+                logoUploadInput: document.getElementById('logo-upload'),
+                logoPreview: document.getElementById('logo-preview'),
+                saveLogoButton: document.getElementById('save-logo-button'),
+                themeSelect: document.getElementById('theme-select'),
+                customColorsContainer: document.getElementById('custom-colors-container'),
+                customColorPicker: document.getElementById('custom-color-picker'),
+                saveThemeButton: document.getElementById('save-theme-button'),
+            },
+            settingsForm: document.getElementById('settings-form'),
+            deliveryFeeInput: document.getElementById('delivery-fee'),
+            confirmationModal: {
+                modal: document.getElementById('confirmation-modal'),
+                confirmButton: document.getElementById('confirm-action-button'),
+                cancelButton: document.getElementById('cancel-confirmation-button')
+            },
+            toast: document.getElementById('toast')
+        };
+        
+        // --- THEME DATA & LOGIC ---
+        const themes = {
+            'laranja-padrao': { name: 'Laranja Padrão', isDark: false, hue: 24, saturation: 95, lightness: 53 },
+            'rosa-padrao': { name: 'Rosa Padrão', isDark: false, hue: 333, saturation: 82, lightness: 52 },
+            'azul-romantico': { name: 'Azul Romântico', isDark: false, hue: 221, saturation: 83, lightness: 53 },
+            'vermelho-paixao': { name: 'Vermelho Paixão', isDark: false, hue: 355, saturation: 79, lightness: 49 },
+            'azul-ceu': { name: 'Azul Céu', isDark: false, hue: 207, saturation: 90, lightness: 54 },
+            'verde-esperanca': { name: 'Verde Esperança', isDark: false, hue: 145, saturation: 63, lightness: 42 },
+            'dark-moderno': { 
+                name: 'Dark Moderno', isDark: true, hue: 217, saturation: 91, lightness: 60,
+                bg: '#111827', cardBg: '#1f2937', textBase: '#f3f4f6', textMuted: '#9ca3af', border: '#374151'
+            },
+            'custom': { name: 'Personalizado', isDark: false }
+        };
+
+        const applyTheme = (themeData) => {
+            const root = document.documentElement.style;
+            if (themeData.isDark) {
+                root.setProperty('--color-bg', themeData.bg);
+                root.setProperty('--color-card-bg', themeData.cardBg);
+                root.setProperty('--color-text-base', themeData.textBase);
+                root.setProperty('--color-text-muted', themeData.textMuted);
+                root.setProperty('--color-border', themeData.border);
+            } else {
+                root.setProperty('--color-bg', '#f9fafb');
+                root.setProperty('--color-card-bg', '#ffffff');
+                root.setProperty('--color-text-base', '#1f2937');
+                root.setProperty('--color-text-muted', '#4b5563');
+                root.setProperty('--color-border', '#e5e7eb');
+            }
+            if (themeData.hue) {
+                root.setProperty('--color-primary-hue', themeData.hue);
+                root.setProperty('--color-primary-saturation', `${themeData.saturation}%`);
+                root.setProperty('--color-primary-lightness', `${themeData.lightness}%`);
+            } else if (themeData.customColor) {
+                const [h, s, l] = hexToHsl(themeData.customColor);
+                root.setProperty('--color-primary-hue', h);
+                root.setProperty('--color-primary-saturation', `${s}%`);
+                root.setProperty('--color-primary-lightness', `${l}%`);
+            }
+        };
+        
+        const hexToHsl = (hex) => {
+            let r = parseInt(hex.slice(1, 3), 16) / 255;
+            let g = parseInt(hex.slice(3, 5), 16) / 255;
+            let b = parseInt(hex.slice(5, 7), 16) / 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max === min) { h = s = 0; } 
+            else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+        };
+        
+        // --- UTILITY FUNCTIONS ---
+        const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const showToast = (message, type = 'success') => {
+            dom.toast.textContent = message;
+            dom.toast.className = `fixed bottom-5 right-5 text-white py-2 px-5 rounded-lg shadow-lg transform transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+            dom.toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => { dom.toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+        };
+
+        // --- RENDER FUNCTIONS ---
+        const renderCategories = () => {
+            const selectContainer = dom.admin.productCategoryInput;
+            selectContainer.innerHTML = '';
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.name.toLowerCase().replace(/\s+/g, '-');
+                option.textContent = cat.name;
+                selectContainer.appendChild(option);
+            });
+
+            const listContainer = dom.admin.adminCategoryList;
+            listContainer.innerHTML = '';
+            categories.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = 'p-2 rounded-md flex justify-between items-center';
+                item.style.backgroundColor = 'var(--color-bg)';
+                item.innerHTML = `
+                    <span class="font-medium">${cat.name}</span>
+                    <button class="delete-category-btn p-1 text-red-500 hover:bg-red-100 rounded-full" data-id="${cat.id}"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
+                listContainer.appendChild(item);
+            });
+            lucide.createIcons();
+        };
+
+        const renderAdminProducts = () => {
+            dom.admin.productList.innerHTML = '';
+            products.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'p-4 rounded-lg shadow-sm flex items-center justify-between';
+                item.style.backgroundColor = 'var(--color-card-bg)';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <img src="${p.image}" alt="${p.name}" class="w-16 h-16 object-contain rounded-md" style="background-color: var(--color-bg)">
+                        <div><p class="font-bold">${p.name}</p><p class="text-sm" style="color: var(--color-text-muted)">${formatCurrency(p.price)}</p></div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="edit-product-btn p-2 text-blue-600 hover:bg-blue-100 rounded-full" data-id="${p.id}"><i data-lucide="file-pen-line"></i></button>
+                        <button class="delete-product-btn p-2 text-red-600 hover:bg-red-100 rounded-full" data-id="${p.id}"><i data-lucide="trash-2"></i></button>
+                    </div>`;
+                dom.admin.productList.appendChild(item);
+            });
+            lucide.createIcons();
+        };
+        
+        // --- MAIN INITIALIZATION ---
+        async function main() {
+            lucide.createIcons();
+            setupEventListeners();
+            
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Firebase Auth Error:", error);
+                dom.appLoader.innerText = "Erro ao conectar. Por favor, recarregue a página.";
+                return;
+            }
+            
+            // Set up real-time data listeners from Firebase
+            onSnapshot(query(collection(db, "products"), orderBy("createdAt", "desc")), (snapshot) => {
+                products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAdminProducts();
+            });
+            onSnapshot(doc(db, "settings", "delivery"), (doc) => {
+                deliveryFee = doc.exists() ? doc.data().fee : 5.00;
+                dom.deliveryFeeInput.value = deliveryFee.toFixed(2);
+            });
+            onSnapshot(doc(db, "settings", "logo"), (doc) => {
+                logoUrl = doc.exists() ? doc.data().url : null;
+                dom.admin.logoPreview.src = logoUrl || "https://placehold.co/100x100/f97316/ffffff?text=Logo";
+            });
+            onSnapshot(query(collection(db, "categories"), orderBy("name")), (snapshot) => {
+                categories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderCategories();
+            });
+            onSnapshot(doc(db, "settings", "theme"), (doc) => {
+                let themeName = 'laranja-padrao';
+                if (doc.exists()) {
+                    currentTheme = doc.data();
+                    themeName = currentTheme.name;
+                    const themeData = themes[themeName] || themes['laranja-padrao'];
+                    if(themeName === 'custom' && currentTheme.color){
+                        themeData.customColor = currentTheme.color;
+                        dom.admin.customColorPicker.value = currentTheme.color;
+                    }
+                    applyTheme(themeData);
+                } else {
+                    applyTheme(themes['laranja-padrao']);
+                }
+                dom.admin.themeSelect.value = themeName;
+                dom.admin.customColorsContainer.classList.toggle('hidden', themeName !== 'custom');
+            });
+            
+            dom.appLoader.style.display = 'none';
+            dom.app.classList.remove('hidden');
+        }
+
+        function setupEventListeners() {
+            // Admin Form
+            dom.admin.form.addEventListener('submit', handleAdminFormSubmit);
+            dom.admin.cancelEditButton.addEventListener('click', resetAdminForm);
+            dom.admin.productList.addEventListener('click', handleAdminListClick);
+            dom.admin.categoryForm.addEventListener('submit', handleCategoryFormSubmit);
+            dom.admin.adminCategoryList.addEventListener('click', handleDeleteCategoryClick);
+            dom.settingsForm.addEventListener('submit', handleSettingsFormSubmit);
+            dom.admin.productImageInput.addEventListener('change', e => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        dom.admin.imagePreview.src = e.target.result;
+                        dom.admin.imagePreview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            dom.admin.logoUploadInput.addEventListener('change', handleLogoPreview);
+            dom.admin.saveLogoButton.addEventListener('click', handleSaveLogo);
+            dom.admin.themeSelect.addEventListener('change', (e) => {
+                const selectedTheme = e.target.value;
+                dom.admin.customColorsContainer.classList.toggle('hidden', selectedTheme !== 'custom');
+                if (selectedTheme !== 'custom') {
+                    applyTheme(themes[selectedTheme]);
+                } else {
+                    applyTheme({ customColor: dom.admin.customColorPicker.value });
+                }
+            });
+            dom.admin.customColorPicker.addEventListener('input', (e) => {
+                applyTheme({ customColor: e.target.value });
+            });
+            dom.admin.saveThemeButton.addEventListener('click', async () => {
+                const selectedThemeName = dom.admin.themeSelect.value;
+                let themeToSave = { name: selectedThemeName };
+                if(selectedThemeName === 'custom'){
+                    themeToSave.color = dom.admin.customColorPicker.value;
+                }
+                try {
+                    await setDoc(doc(db, "settings", "theme"), themeToSave);
+                    showToast('Tema salvo com sucesso!');
+                } catch(error) {
+                    showToast('Erro ao salvar o tema.', 'error');
+                }
+            });
+
+            // Confirmation Modal
+            dom.confirmationModal.cancelButton.addEventListener('click', () => {
+                dom.confirmationModal.modal.classList.add('hidden');
+                actionToConfirm = null;
+            });
+            dom.confirmationModal.confirmButton.addEventListener('click', () => {
+                if (typeof actionToConfirm === 'function') actionToConfirm();
+                dom.confirmationModal.modal.classList.add('hidden');
+                actionToConfirm = null;
+            });
+        }
+        
+        // --- EVENT HANDLERS ---
+        async function handleAdminFormSubmit(e) {
+            e.preventDefault();
+            if (categories.length === 0) { return showToast('Adicione uma categoria primeiro!', 'error'); }
+            const { saveButton, saveButtonText, saveButtonLoader, productImageInput, productImageUrlInput } = dom.admin;
+            saveButtonText.textContent = editingProductId ? 'Atualizando...' : 'Salvando...';
+            saveButtonLoader.classList.remove('hidden');
+            saveButton.disabled = true;
+            const imageFile = productImageInput.files[0];
+            let imageUrl = productImageUrlInput.value;
+            if (imageFile) {
+                const storageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
+                await uploadBytes(storageRef, imageFile);
+                imageUrl = await getDownloadURL(storageRef);
+            }
+            const productData = { name: dom.admin.productNameInput.value, description: dom.admin.productDescInput.value, price: parseFloat(dom.admin.productPriceInput.value), category: dom.admin.productCategoryInput.value, image: imageUrl, createdAt: serverTimestamp() };
+            try {
+                if (editingProductId) {
+                    await setDoc(doc(db, "products", editingProductId), productData);
+                    showToast('Produto atualizado!');
+                } else {
+                    await addDoc(collection(db, "products"), productData);
+                    showToast('Produto adicionado!');
+                }
+            } catch (error) { showToast('Erro ao salvar produto.', 'error'); console.error("Firestore Error: ", error); } finally {
+                resetAdminForm();
+                saveButtonText.textContent = 'Salvar Produto';
+                saveButtonLoader.classList.add('hidden');
+                saveButton.disabled = false;
+            }
+        }
+        async function handleCategoryFormSubmit(e) {
+            e.preventDefault();
+            const newCategoryName = dom.admin.categoryNameInput.value.trim();
+            if (newCategoryName) {
+                try { await addDoc(collection(db, "categories"), { name: newCategoryName }); showToast('Categoria adicionada!'); dom.admin.categoryForm.reset(); } catch(error) { showToast('Erro ao adicionar categoria.', 'error'); }
+            }
+        }
+        function handleLogoPreview(e) {
+            const file = e.target.files[0];
+            if (file) { const reader = new FileReader(); reader.onload = (event) => { dom.admin.logoPreview.src = event.target.result; }; reader.readAsDataURL(file); }
+        }
+        async function handleSaveLogo() {
+            const file = dom.admin.logoUploadInput.files[0];
+            if (!file) { return showToast('Selecione um arquivo de imagem primeiro.', 'error'); }
+            dom.admin.saveLogoButton.textContent = 'Enviando...';
+            dom.admin.saveLogoButton.disabled = true;
+            try {
+                const storageRef = ref(storage, `settings/logo-${Date.now()}`);
+                await uploadBytes(storageRef, file);
+                const newLogoUrl = await getDownloadURL(storageRef);
+                await setDoc(doc(db, "settings", "logo"), { url: newLogoUrl });
+                showToast('Logo atualizada com sucesso!');
+            } catch (error) { console.error("Logo Upload Error:", error); showToast('Erro ao enviar a logo.', 'error'); } finally {
+                dom.admin.saveLogoButton.textContent = 'Salvar Logo';
+                dom.admin.saveLogoButton.disabled = false;
+            }
+        }
+        function handleDeleteCategoryClick(e) {
+            const deleteBtn = e.target.closest('.delete-category-btn');
+            if (deleteBtn) {
+                const id = deleteBtn.dataset.id;
+                const categoryName = categories.find(c => c.id === id)?.name || '';
+                actionToConfirm = async () => {
+                    try { await deleteDoc(doc(db, "categories", id)); showToast(`Categoria "${categoryName}" excluída!`, 'error'); } catch (error) { showToast('Erro ao excluir categoria.', 'error'); }
+                };
+                document.getElementById('confirmation-message').textContent = `Tem certeza que deseja excluir a categoria "${categoryName}"? Isso não removerá os produtos já existentes nesta categoria.`;
+                dom.confirmationModal.modal.classList.remove('hidden');
+            }
+        }
+        async function handleSettingsFormSubmit(e) {
+            e.preventDefault();
+            const newFee = parseFloat(dom.deliveryFeeInput.value);
+            if (!isNaN(newFee) && newFee >= 0) { await setDoc(doc(db, "settings", "delivery"), { fee: newFee }); showToast('Taxa de entrega atualizada!'); }
+        }
+        function handleAdminListClick(e) {
+            const editBtn = e.target.closest('.edit-product-btn');
+            const deleteBtn = e.target.closest('.delete-product-btn');
+            if (editBtn) {
+                const id = editBtn.dataset.id;
+                const p = products.find(prod => prod.id === id);
+                editingProductId = id;
+                dom.admin.productNameInput.value = p.name;
+                dom.admin.productDescInput.value = p.description;
+                dom.admin.productPriceInput.value = p.price;
+                dom.admin.productCategoryInput.value = p.category;
+                dom.admin.productImageUrlInput.value = p.image;
+                dom.admin.imagePreview.src = p.image;
+                dom.admin.imagePreview.classList.remove('hidden');
+                dom.admin.formTitle.textContent = 'Editar Produto';
+                dom.admin.saveButtonText.textContent = 'Atualizar Produto';
+                dom.admin.cancelEditButton.classList.remove('hidden');
+                dom.admin.form.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (deleteBtn) {
+                const id = deleteBtn.dataset.id;
+                actionToConfirm = async () => {
+                    try {
+                        const productToDelete = products.find(p => p.id === id);
+                        if (productToDelete && productToDelete.image.includes('firebasestorage')) {
+                            const imageRef = ref(storage, productToDelete.image);
+                            await deleteObject(imageRef);
+                        }
+                        await deleteDoc(doc(db, "products", id));
+                        showToast('Produto excluído!', 'error');
+                    } catch (error) { showToast('Erro ao excluir produto.', 'error'); console.error("Deletion Error:", error); }
+                };
+                document.getElementById('confirmation-message').textContent = 'Tem certeza que deseja excluir este produto?';
+                dom.confirmationModal.modal.classList.remove('hidden');
+            }
+        }
+        function resetAdminForm() {
+            dom.admin.form.reset();
+            dom.admin.imagePreview.classList.add('hidden');
+            dom.admin.imagePreview.src = '';
+            editingProductId = null;
+            dom.admin.formTitle.textContent = 'Adicionar Novo Produto';
+            dom.admin.saveButtonText.textContent = 'Salvar Produto';
+            dom.admin.cancelEditButton.classList.add('hidden');
+        }
+        
+        // --- START THE APP ---
+        main();
+    </script>
+
+</body>
+</html>
+
