@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Painel DANARAFOODS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --color-primary: #f97316;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md p-8 space-y-8 bg-white shadow-lg rounded-xl">
+        <div>
+            <h1 class="text-3xl font-bold text-center" style="color: var(--color-primary)">DANARAFOODS</h1>
+            <h2 class="mt-2 text-center text-xl font-bold tracking-tight text-gray-900">
+                Acesso ao Painel
+            </h2>
+        </div>
+        <form id="login-form" class="mt-8 space-y-6">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="email-address" class="sr-only">Email</label>
+                    <input id="email-address" name="email" type="email" autocomplete="email" required class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-3 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm" placeholder="Email">
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Senha</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-3 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm" placeholder="Senha">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" id="login-button" class="group relative flex w-full justify-center rounded-md border border-transparent py-3 px-4 text-sm font-medium text-white transition-colors" style="background-color: var(--color-primary);">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <i data-lucide="lock" class="h-5 w-5 text-orange-300 group-hover:text-orange-200"></i>
+                    </span>
+                    Entrar
+                </button>
+            </div>
+        </form>
+        <p id="error-message" class="text-center text-sm text-red-600 mt-2"></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6kWt6KgT1zhRcY68-tExu4ZeqqmF9xhg",
+            authDomain: "danarafoods.firebaseapp.com",
+            projectId: "danarafoods",
+            storageBucket: "danarafoods.firebasestorage.app",
+            messagingSenderId: "670145100782",
+            appId: "1:670145100782:web:7eabb86f092bb241cd6cff",
+            measurementId: "G-HS1NJ9CLFV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        lucide.createIcons();
+
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+
+        // Redireciona se já estiver logado
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = './admin.html';
+            }
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            errorMessage.textContent = '';
+            const email = loginForm.email.value;
+            const password = loginForm.password.value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Login bem-sucedido, será redirecionado pelo onAuthStateChanged
+                })
+                .catch((error) => {
+                    console.error("Erro de login:", error.code);
+                    if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                        errorMessage.textContent = 'E-mail ou senha inválidos.';
+                    } else {
+                        errorMessage.textContent = 'Ocorreu um erro ao tentar fazer login.';
+                    }
+                });
+        });
+    </script>
+</body>
+</html>
